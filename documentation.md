@@ -45,9 +45,12 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
 
 ### Dependencies ?
 
-`'Dependencies` with a specific function :
+`'Dependencies` with specific functions :
 
 - structure_loop.m
+- main_flat.m
+- coordinates.m
+- runflat.m
 
 
 And it `uses data` such as :
@@ -60,7 +63,7 @@ And it `uses data` such as :
 
 
 
-### What wasn't working well ?
+### What was wrong with it ?
 
 One file looks like missing when we run this function : 'results_flat.m'.  
 So I tried to figure out when should this file be created. It appears that this file is created in the function 'main_flat.m'.
@@ -70,46 +73,46 @@ In main_flat, many errors :
 1. check.fit didn't exist, I added a line :
 
     ```matlab
-    check.fit = exist('fit_info.mat', 'file');
+        check.fit = exist('fit_info.mat', 'file');
     ```
 
 2. Problems with the 'for loop' line 74 so I added manually some information in order to be able to continue debugging the code :
 
     ```matlab
-    load T2maps
-    res_map  = T2map;
-    map_temp = 2;
+        load T2maps
+        res_map  = T2map;
+        map_temp = 2;
     ```
 
 3. Line 99, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 184. In this function, there are problems related to the use of structure in Matlab. At line 24, it was initially written this :
 
     ```matlab
-    slices=zeros(length(seg_general(series).lines),1);
-    for ii=1:length(seg_general(series).lines)
-         if isreal(seg_general(series).lines(ii).lines) == 0
-             slices(ii)=1;
-         else
-             slices(ii)=0;
-        end
-    end 
-    slice=find(slices);
+        slices = zeros(length(seg_general(series).lines), 1);
+        for ii = 1 : length(seg_general(series).lines)
+            if isreal(seg_general(series).lines(ii).lines) == 0
+                slices(ii) = 1;
+            else
+                slices(ii) = 0;
+            end
+        end 
+        slice = find(slices);
     ```
     But it is impossible to take the length of this type of object. 'Series' is a list and 'seg_general(series).lines' is a array of struct array. Moreover, we cannot write 'seg_general(series).lines(ii).lines' because there are 2 results.  
     So, I decided to temporarily write this instead :
 
     ```matlab
-    slices=zeros(18,1);
-    size_series = size(series);
-    for ii = 1 : size_series
-        for jj = 1 : 18
-            if isreal (seg_general(series(ii)).lines(jj).lines) == 0
-                slices(jj) = 1;
-            else
-                slices(jj) = 0;
+        slices = zeros(18, 1);
+        size_series = size(series);
+        for ii = 1 : size_series
+            for jj = 1 : 18
+                if isreal (seg_general(series(ii)).lines(jj).lines) == 0
+                    slices(jj) = 1;
+                else
+                    slices(jj) = 0;
+                end
             end
-        end
-    end 
-    slice=find(slices);
+        end 
+        slice = find(slices);
     ``` 
 
     And it seems that it resolves the problem for now.
@@ -119,22 +122,102 @@ In main_flat, many errors :
     At line 5, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
     ```matlab
-    x=seg_general(index.serie).lines(index.slice).lines(t).X;
-    y=seg_general(index.serie).lines(index.slice).lines(t).Y;
+        x = seg_general(index.serie).lines(index.slice).lines(t).X;
+        y = seg_general(index.serie).lines(index.slice).lines(t).Y;
     ``` 
 
     So I wrote this instead :
 
     ```matlab
-    size_serie = length(index.serie);
-    for i = 1 : size_serie
-        x=seg_general(index.serie(size_serie)).lines(index.slice).lines(1).X;
-        y=seg_general(index.serie(size_serie)).lines(index.slice).lines(1).Y;
-    end
+        size_serie = length(index.serie);
+        for i = 1 : size_serie
+            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).X;
+            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).Y;
+        end
     ``` 
 
     Looks like 'coordinate.m' is now working well.
  
 5. Back in 'main_flat.m', another error to fix refering to 'runflat.m'.
 
+    One error is related to the same problem than before (access to a struct of struct).  
+    At line 76, I wrote this :
 
+    ```matlab
+        size_serie = length(index.serie);
+        for i = 1 : size_serie
+            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).X;
+            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).Y;
+        end
+    ```
+
+    Instead of this :
+
+    ```matlab
+        Timage = Tmap(index.serie).T2(:,:,index.slice);
+    ```
+
+    It now seems that 'run_flat.m' is working.
+
+6. One error occurs at lines 202 and 214, it was written :
+
+    ```matlab
+        Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
+    ```
+
+    But, at left we have a problem of size, I wrote :
+
+    ```matlab
+        Tmap_flat.femur = runflat(Tmap, seg_general, template, index, check);
+    ```
+
+    It seems okay now.
+
+7. The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
+
+    At line 109, I wrote :
+
+    ```matlab
+        save(savefile, 'T2map_flat', 'dir_name')
+    ```  
+    instead of :
+
+    ```matlab
+        save(savefile, 'T2map_flat', 'param', 'dir_name')
+    ```
+
+The file 'results_flat.mat' is now created !!  
+We can now go back to 'flat_converter.m'.
+
+8. A major problem occurs now : 
+
+    ```matlab
+        datasheet.femur{series}(rr).T_flat
+    ```
+    For example, the syntax 'datasheet.femur{series}(rr)' is not right because 'datasheet.femur' is a struct with different fields.  
+    Then, I decided to replace all the lines using this by :
+
+    ```matlab
+        datasheet.femur.T_flat
+    ```
+
+9. At line 141, we can see this :
+
+    ```matlab
+        temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
+    ```
+
+    which is a wrong use of 'zeros', so I wrote this instead :
+
+    ```matlab
+        temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
+    ```   
+
+10. Now, I have an error related to sizes. In fact, at line 204 :
+
+    ```matlab
+        temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
+    ```  
+
+    But, 'temp_map' is 384 by 384 and 'temp_mask' is 384 by 259.  
+    I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
