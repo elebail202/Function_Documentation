@@ -70,13 +70,13 @@ So I tried to figure out when should this file be created. It appears that this 
 
 In main_flat, many errors :
 
-1. check.fit didn't exist, I added a line :
+1. check.fit didn't exist, I added a line at line 59 :
 
     ```matlab
         check.fit = exist('fit_info.mat', 'file');
     ```
 
-2. Problems with the 'for loop' line 74 so I added manually some information in order to be able to continue debugging the code :
+2. Problems with the 'for loop' line 62 so I added manually some information in order to be able to continue debugging the code at line 82 :
 
     ```matlab
         load T2maps
@@ -84,7 +84,7 @@ In main_flat, many errors :
         map_temp = 2;
     ```
 
-3. Line 99, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 184. In this function, there are problems related to the use of structure in Matlab. At line 24, it was initially written this :
+3. Line 88, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 24, it was initially written this :
 
     ```matlab
         slices = zeros(length(seg_general(series).lines), 1);
@@ -119,7 +119,7 @@ In main_flat, many errors :
 
 4. So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function : 
 
-    At line 5, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
+    At line 6, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
     ```matlab
         x = seg_general(index.serie).lines(index.slice).lines(t).X;
@@ -141,13 +141,12 @@ In main_flat, many errors :
 5. Back in 'main_flat.m', another error to fix refering to 'runflat.m'.
 
     One error is related to the same problem than before (access to a struct of struct).  
-    At line 76, I wrote this :
+    At line 86, I wrote this :
 
     ```matlab
-        size_serie = length(index.serie);
-        for i = 1 : size_serie
-            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).X;
-            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).Y;
+        serie_size = length(index.serie);
+        for i = 1 : serie_size
+            Timage = Tmap(index.serie(serie_size)).T2(:, :, index.slice);
         end
     ```
 
@@ -159,7 +158,7 @@ In main_flat, many errors :
 
     It now seems that 'run_flat.m' is working.
 
-6. One error occurs at lines 202 and 214, it was written :
+6. One error occurs at lines 189 and 199, it was written :
 
     ```matlab
         Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
@@ -175,7 +174,7 @@ In main_flat, many errors :
 
 7. The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
 
-    At line 109, I wrote :
+    At line 98, I wrote :
 
     ```matlab
         save(savefile, 'T2map_flat', 'dir_name')
@@ -213,7 +212,7 @@ We can now go back to 'flat_converter.m'.
         temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
     ```   
 
-10. Now, I have an error related to sizes. In fact, at line 204 :
+10. Now, I have an error related to sizes. In fact, at line 203 :
 
     ```matlab
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
@@ -221,3 +220,19 @@ We can now go back to 'flat_converter.m'.
 
     But, 'temp_map' is 384 by 384 and 'temp_mask' is 384 by 259.  
     I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
+
+    For the moment, I decided to fill the smaller matrix with zeros. Line 203, it is now written :
+
+    ```matlab
+        temp_map(series).T2=[temp_map(series).T2 zeros(384, 125, 6)];
+        temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
+    ```
+
+11. Error line 261 which refers to the 'format_results.m' function. What is wrong is at the line 47 :
+
+    ```matlab
+        cd(backimgs(1).folder(1).name)
+        dcinfo=dicominfo(backimgs(1).filename(1).name);
+    ```
+
+    We can't use dot indexing here.
