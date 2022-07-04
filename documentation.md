@@ -235,4 +235,5 @@ We can now go back to 'flat_converter.m'.
         dcinfo=dicominfo(backimgs(1).filename(1).name);
     ```
 
-    We can't use dot indexing here.
+    We can't use dot indexing here.  
+    Once, I changed the value of backimgs that was assigned in 'flat_converter.m', I could realize that the path is not right. It brings to an old path that doesn't exist on my computer. However, in the 'convert_segmentations_to_dicom_final.m', the same syntaxis seems to be used. I need to find the difference between the two codes. Then, 'backimgs(1).filename(1).name' will refers to the good path.
