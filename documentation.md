@@ -51,6 +51,7 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
 - main_flat.m
 - coordinates.m
 - runflat.m
+- laplacian_thickness.m ?? + others???
 
 
 And it `uses data` such as :
@@ -224,7 +225,7 @@ We can now go back to 'flat_converter.m'.
     For the moment, I decided to fill the smaller matrix with zeros. Line 203, it is now written :
 
     ```matlab
-        temp_map(series).T2=[temp_map(series).T2 zeros(384, 125, 6)];
+        temp_map(series).T2=[temp_map(series).T2 zeros(384, 125, 8)];
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
     ```
 
@@ -237,3 +238,25 @@ We can now go back to 'flat_converter.m'.
 
     We can't use dot indexing here.  
     Once, I changed the value of backimgs that was assigned in 'flat_converter.m', I could realize that the path is not right. It brings to an old path that doesn't exist on my computer. However, in the 'convert_segmentations_to_dicom_final.m', the same syntaxis seems to be used. I need to find the difference between the two codes. Then, 'backimgs(1).filename(1).name' will refers to the good path.
+
+    I didn't find from where the error comes from for now so I manually entered the right value at line 47 :
+
+    ```matlab
+        backimgs(1).folder(1).name='Anonymized - 04071989/Fyysikot Vic/T2 MAP sag 2 pakkaa_04_SL2 - 14';
+        cd(backimgs(1).folder(1).name)
+        backimgs(1).filename(1).name='IM-0001-0001-0001.IMA';
+        dcinfo=dicominfo(backimgs(1).filename(1).name);
+    ```
+    And now, still in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
+    I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
+
+    ```matlab
+    fid_patreport = fopen('fid_patreport.txt','w');
+    ```
+
+12. I have now an other error at line 589 in 'format_results.m'. This erros is related to another function : 'laplacian_thickness.m'.  
+    It says index in position 1 is invalid : 
+
+    ```matlab
+        [streamLinePoints_femur,potentialFinalFemur] = laplacian_thickness(I,fem_bci,fem_cart,roilist,bb,1);
+    ```
