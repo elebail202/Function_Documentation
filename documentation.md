@@ -260,3 +260,6 @@ We can now go back to 'flat_converter.m'.
     ```matlab
         [streamLinePoints_femur,potentialFinalFemur] = laplacian_thickness(I,fem_bci,fem_cart,roilist,bb,1);
     ```
+
+
+    NB : I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........
