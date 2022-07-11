@@ -69,6 +69,11 @@ And it `uses data` such as :
 One file looks like missing when we run this function : 'results_flat.m'.  
 So I tried to figure out when should this file be created. It appears that this file is created in the function 'main_flat.m'.
 
+I added at the beginning, line 17 : 
+```matlab
+    load T2maps
+```
+
 In main_flat, many errors :
 
 1. check.fit didn't exist, I added a line at line 59 :
