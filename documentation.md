@@ -69,7 +69,7 @@ And it `uses data` such as :
 One file looks like missing when we run this function : 'results_flat.m'.  
 So I tried to figure out when should this file be created. It appears that this file is created in the function 'main_flat.m'.
 
-I added at the beginning, line 17 : 
+I added at the beginning of 'results_flat.m', line 17 : 
 ```matlab
     load T2maps
 ```
@@ -82,15 +82,21 @@ In main_flat, many errors :
         check.fit = exist('fit_info.mat', 'file');
     ```
 
-2. Problems with the 'for loop' line 62 so I added manually some information in order to be able to continue debugging the code at line 82 :
+2. Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :
 
     ```matlab
-        load T2maps
-        res_map  = T2map;
-        map_temp = 2;
+        cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula_test_data\Anonymized - 04071989\Fyysikot Vic\mokkulafiles\20-Jun-2022-09.51.15');
+        matfilelist = what;
     ```
 
-3. Line 88, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 24, it was initially written this :
+    And in the same code, the file 'results_flat' was not created in the right folder, so I added this at line 88 :
+
+    ```matlab
+        cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula\analyysimokkula\flatter')
+        savefile = 'results_flat';
+    ```
+
+3. Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :
 
     ```matlab
         slices = zeros(length(seg_general(series).lines), 1);
@@ -123,7 +129,7 @@ In main_flat, many errors :
 
     And it seems that it resolves the problem for now.
 
-4. So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function : 
+4. So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function :
 
     At line 6, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
@@ -164,7 +170,7 @@ In main_flat, many errors :
 
     It now seems that 'run_flat.m' is working.
 
-6. One error occurs at lines 189 and 199, it was written :
+6. One error occurs at lines 187 and 197 in 'main_flat.m', it was written :
 
     ```matlab
         Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
@@ -180,7 +186,7 @@ In main_flat, many errors :
 
 7. The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
 
-    At line 98, I wrote :
+    At line 96, I wrote :
 
     ```matlab
         save(savefile, 'T2map_flat', 'dir_name')
@@ -194,7 +200,7 @@ In main_flat, many errors :
 The file 'results_flat.mat' is now created !!  
 We can now go back to 'flat_converter.m'.
 
-8. A major problem occurs now : 
+8. A major problem occurs now :
 
     ```matlab
         datasheet.femur{series}(rr).T_flat
@@ -224,13 +230,13 @@ We can now go back to 'flat_converter.m'.
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
     ```  
 
-    But, 'temp_map' is 384 by 384 and 'temp_mask' is 384 by 259.  
+    But, 'temp_mask' is 384 by 384 and 'temp_map' is 384 by 281.  
     I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
 
-    For the moment, I decided to fill the smaller matrix with zeros. Line 203, it is now written :
+    For the moment, I decided to fill the smaller matrix with zeros. Line 204, it is now written :
 
     ```matlab
-        temp_map(series).T2=[temp_map(series).T2 zeros(384, 125, 8)];
+        temp_map(series).T2=[temp_map(series).T2 zeros(384, 103, 8)];
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
     ```
 
@@ -259,12 +265,44 @@ We can now go back to 'flat_converter.m'.
     fid_patreport = fopen('fid_patreport.txt','w');
     ```
 
-12. I have now an other error at line 589 in 'format_results.m'. This erros is related to another function : 'laplacian_thickness.m'.  
+12. I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........I felt like it was not the good argument place in the call.
+
+     Originally, the function is defined like this :
+
+    ```matlab
+        format_results(series,flipped,firstresults,sequence_save_info,patientname,fid_patreport,series_loc,xlimits,ylimits,backimgs,varargin)
+    ```
+
+    So I wrote this :
+       
+    ```matlab
+        format_results(series, seg_general(series).flipped, seg_general(series).minvalue, ...
+        seg_general(series).maxvalue, fit_info(series).patientname, zeros(size(mask_stack)), ...
+            thisfolder, size(temp_mask, 1), size(temp_mask, 2), seg_general(series).backimgs)
+    ```
+     Instead of this :
+
+    ```matlab
+        format_results(series, seg_general(series).flipped, seg_general(series).minvalue, seg_general(series).maxvalue, ...
+        0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
+    ```
+
+13. I have now an other error at line 589 in 'format_results.m'. This error is related to another        function : 'laplacian_thickness.m'.  
     It says index in position 1 is invalid : 
 
     ```matlab
         [streamLinePoints_femur,potentialFinalFemur] = laplacian_thickness(I,fem_bci,fem_cart,roilist,bb,1);
     ```
 
+    The problem is that in one the calculations, *'y(index) = 1'* and *'deltaY = 1'* so *'y(index) - deltaY = 0'*. This leads to an error. This is due to index : 
 
-    NB : I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........
+    ```matlab
+        index = 1 : numel(x)
+    ```
+    It gives *'index = 1'* and *'y(1)=1'*.
+
+    **HOW TO FIND A SOLUTION ?** For the moment, I manually changed the value of *'y(index)'* and *'x(index)'* because we have the same issue for *'x'*.
+
+14. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the for loop is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
+
+I have to find why the matrix if fill with zero. Maybe it is a problem of saved file because initially T2maps should not be filled with zeros. Related to what is saved in the workspace ??
