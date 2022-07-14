@@ -66,6 +66,8 @@ And it `uses data` such as :
 
 ### What was wrong with it ?
 
+> *Before running this function, one needs to run 'main_flat.m' because it is here that 'results_flat.m' is created if already not created.*
+
 One file looks like missing when we run this function : 'results_flat.m'.  
 So I tried to figure out when should this file be created. It appears that this file is created in the function 'main_flat.m'.
 
