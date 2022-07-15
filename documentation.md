@@ -308,3 +308,21 @@ We can now go back to 'flat_converter.m'.
 14. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the for loop is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
 
 I have to find why the matrix if fill with zero. Maybe it is a problem of saved file because initially T2maps should not be filled with zeros. Related to what is saved in the workspace ??
+
+**add what is written in my book**
+
+On 15/07/22
+
+Actually, roilist is full of 0 so it cannot be used as an array indice. I tried to understant how it was created.
+
+data_bF(roilist(slice).bF) = data_slice(roilist(slice).bF); 
+
+Here it is used as a array indice but it is wrong.
+
+Pour le moment, dans main_flat j'ai mis T2map_flat.femur.T_flat et T2map_flat.tibia.T_flat sous format long car des valeurs etaient assignees a zero car tres petites devant d autres valeurs. line 97
+
+Roilist contient les 
+
+J ai pas ecrit le truc sur roi que j ai mis vide dans runflat(inputs). Sans ca, Timage est nul du coup c est bizzare non ?? A voir...line 92 dans runflat.
+
+ATTENTION j'ai cree un nouveau file inputs.m pour pouvoir tester mais ne pas oublier de le supprimer et/ou de faire les modification nécessaires dans runflat.m.
