@@ -326,3 +326,6 @@ Roilist contient les
 J ai pas ecrit le truc sur roi que j ai mis vide dans runflat(inputs). Sans ca, Timage est nul du coup c est bizzare non ?? A voir...line 92 dans runflat.
 
 ATTENTION j'ai cree un nouveau file inputs.m pour pouvoir tester mais ne pas oublier de le supprimer et/ou de faire les modification nécessaires dans runflat.m.
+
+
+Dans inputs : il faut que je comprenne pourquoi quand je fais un find(Timage) ca me renvoie des trucs mais quand j'affiche Timage c'est nul !! Du coup Timage est remplie de zero et ne devrait pas...
