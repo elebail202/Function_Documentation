@@ -22,8 +22,8 @@ By running this function, you create a `IMA file` openable with 'dicomread' on M
 The file created contains a 384 * 384 * 3 matrix with values between 0 and 255 which corresponds to the intensity of each pixel. This .IMA format is like dicom images. Once you open it you can see this :
 
 | Segmentation | T2 map |
-| ----------- | ------ |
-| ![alt text](series14_slice8_Segmentation.png =250x) | ![alt text](series14_slice8_T2_map.png =250x ) |
+| :----------: | :----: |
+|<img src = "series14_slice8_Segmentation.png" style="width:205px;height:181px;"> | <img src = "series14_slice8_T2_map.png" style="width:205px;height:181px;"> |
 
 It looks like the colors are inverted and the 'Segmentation' image shows the intensity of each pixel.
 
