@@ -23,7 +23,7 @@ The file created contains a 384 * 384 * 3 matrix with values between 0 and 255 w
 
 | Segmentation | T2 map |
 | ----------- | ------ |
-| ![alt text](series14_slice8_Segmentation.png "Segmentation") | ![alt text](series14_slice8_T2_map.png "T2 map") |
+| ![alt text](series14_slice8_Segmentation.png =250x) | ![alt text](series14_slice8_T2_map.png =250x ) |
 
 It looks like the colors are inverted and the 'Segmentation' image shows the intensity of each pixel.
 
@@ -289,14 +289,14 @@ We can now go back to 'flat_converter.m'.
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
     ```
 
-13. I have now an other error at line 589 in 'format_results.m'. This error is related to another        function : 'laplacian_thickness.m'.  
+13. I have now an other error at line 589 in 'format_results.m'. This error is related to another function : 'laplacian_thickness.m'.  
     It says index in position 1 is invalid : 
 
     ```matlab
         [streamLinePoints_femur,potentialFinalFemur] = laplacian_thickness(I,fem_bci,fem_cart,roilist,bb,1);
     ```
 
-    The problem is that in one the calculations, *'y(index) = 1'* and *'deltaY = 1'* so *'y(index) - deltaY = 0'*. This leads to an error. This is due to index : 
+    The problem is that in one of the calculations, *'y(index) = 1'* and *'deltaY = 1'* so *'y(index) - deltaY = 0'*. This leads to an error. This is due to index : 
 
     ```matlab
         index = 1 : numel(x)
