@@ -45,7 +45,7 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
 
 ### Dependencies ?
 
-`'Dependencies` with specific functions :
+`Dependencies` with specific functions :
 
 - structure_loop.m
 - main_flat.m
@@ -199,7 +199,7 @@ In main_flat, many errors :
         save(savefile, 'T2map_flat', 'param', 'dir_name')
     ```
 
-The file 'results_flat.mat' is now created !!  
+**The file 'results_flat.mat' is now created !!**   
 We can now go back to 'flat_converter.m'.
 
 8. A major problem occurs now :
@@ -212,6 +212,11 @@ We can now go back to 'flat_converter.m'.
 
     ```matlab
         datasheet.femur.T_flat
+    ```
+
+    And I did the same with 
+    ```matlab
+        datasheet.tibia.T_flat
     ```
 
 9. At line 141, we can see this :
@@ -260,6 +265,9 @@ We can now go back to 'flat_converter.m'.
         backimgs(1).filename(1).name='IM-0001-0001-0001.IMA';
         dcinfo=dicominfo(backimgs(1).filename(1).name);
     ```
+
+    *I did the same kind of changes at line 2496 where I manually specified 'backimgs(ac).folder(1).name'*.
+
     And now, still in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
     I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
 
@@ -289,43 +297,10 @@ We can now go back to 'flat_converter.m'.
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
     ```
 
-13. I have now an other error at line 589 in 'format_results.m'. This error is related to another function : 'laplacian_thickness.m'.  
-    It says index in position 1 is invalid : 
+14. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
 
-    ```matlab
-        [streamLinePoints_femur,potentialFinalFemur] = laplacian_thickness(I,fem_bci,fem_cart,roilist,bb,1);
-    ```
+I have to find why the matrix is fill with zero. Maybe it is a problem of saved file because initially T2maps should not be filled with zeros. Related to what is saved in the workspace ??
 
-    The problem is that in one of the calculations, *'y(index) = 1'* and *'deltaY = 1'* so *'y(index) - deltaY = 0'*. This leads to an error. This is due to index : 
+When I run 'format_results' in 'flat_converter.m', all is good and I have no error. All the files are created. But when I run 'flat_converter.m', I have errors. This might comes from 'roilist'. In format_results, the roilist is filled with logical values and in 'flat_converter', the roilist is filled with double. That's why we have an error related to the array indices (it needs to be positive integers or logical values and not double). I have to find what is different with roilist in the two functions.
 
-    ```matlab
-        index = 1 : numel(x)
-    ```
-    It gives *'index = 1'* and *'y(1)=1'*.
-
-    **HOW TO FIND A SOLUTION ?** For the moment, I manually changed the value of *'y(index)'* and *'x(index)'* because we have the same issue for *'x'*.
-
-14. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the for loop is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
-
-I have to find why the matrix if fill with zero. Maybe it is a problem of saved file because initially T2maps should not be filled with zeros. Related to what is saved in the workspace ??
-
-**add what is written in my book**
-
-On 15/07/22
-
-Actually, roilist is full of 0 so it cannot be used as an array indice. I tried to understant how it was created.
-
-data_bF(roilist(slice).bF) = data_slice(roilist(slice).bF); 
-
-Here it is used as a array indice but it is wrong.
-
-Pour le moment, dans main_flat j'ai mis T2map_flat.femur.T_flat et T2map_flat.tibia.T_flat sous format long car des valeurs etaient assignees a zero car tres petites devant d autres valeurs. line 97
-
-Roilist contient les 
-
-J ai pas ecrit le truc sur roi que j ai mis vide dans runflat(inputs). Sans ca, Timage est nul du coup c est bizzare non ?? A voir...line 92 dans runflat.
-
-ATTENTION j'ai cree un nouveau file inputs.m pour pouvoir tester mais ne pas oublier de le supprimer et/ou de faire les modification nécessaires dans runflat.m.
-
-
-Dans inputs : il faut que je comprenne pourquoi quand je fais un find(Timage) ca me renvoie des trucs mais quand j'affiche Timage c'est nul !! Du coup Timage est remplie de zero et ne devrait pas...
+NB : I comment the part of the code in 'flat_converter.m' where T2map is actualised for the moment because it is full of zeros. Maybe it is related to roilist too.
