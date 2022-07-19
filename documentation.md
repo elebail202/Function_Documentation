@@ -145,8 +145,8 @@ In main_flat, many errors :
     ```matlab
         size_serie = length(index.serie);
         for i = 1 : size_serie
-            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).X;
-            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(1).Y;
+            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).X;
+            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).Y;
         end
     ``` 
 
