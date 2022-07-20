@@ -247,28 +247,7 @@ We can now go back to 'flat_converter.m'.
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
     ```
 
-11. Error line 261 which refers to the 'format_results.m' function. What is wrong is at the line 47 :
-
-    ```matlab
-        cd(backimgs(1).folder(1).name)
-        dcinfo=dicominfo(backimgs(1).filename(1).name);
-    ```
-
-    We can't use dot indexing here.  
-    Once, I changed the value of backimgs that was assigned in 'flat_converter.m', I could realize that the path is not right. It brings to an old path that doesn't exist on my computer. However, in the 'convert_segmentations_to_dicom_final.m', the same syntaxis seems to be used. I need to find the difference between the two codes. Then, 'backimgs(1).filename(1).name' will refers to the good path.
-
-    I didn't find from where the error comes from for now so I manually entered the right value at line 47 :
-
-    ```matlab
-        backimgs(1).folder(1).name='Anonymized - 04071989/Fyysikot Vic/T2 MAP sag 2 pakkaa_04_SL2 - 14';
-        cd(backimgs(1).folder(1).name)
-        backimgs(1).filename(1).name='IM-0001-0001-0001.IMA';
-        dcinfo=dicominfo(backimgs(1).filename(1).name);
-    ```
-
-    *I did the same kind of changes at line 2496 where I manually specified 'backimgs(ac).folder(1).name'*.
-
-    And now, still in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
+11. And now, in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
     I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
 
     ```matlab
