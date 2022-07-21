@@ -47,11 +47,10 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
 
 `Dependencies` with specific functions :
 
-- structure_loop.m
 - main_flat.m
-- coordinates.m
-- runflat.m
-- laplacian_thickness.m ?? + others???
+- format_results.m
+- texture2_fast
+- *... A diagram with the dependancies betweem the functions if coming...*
 
 
 And it `uses data` such as :
@@ -59,13 +58,33 @@ And it `uses data` such as :
 - segment_info
 - results_flat
 - fit_info
+- T2maps 
 
 ### What is it doing ?
 
+This function is creating a `new folder` with all the data flatted. As the function is in the 'flatter' folder, the name of the new folder is 'flatter_flat'. Here is a screen of all the files created in 'flatter_flat' :
 
+<center>
+<img src = "flatter_flat.png" style="width:258px;height:239px;" >
+</center>
+
+In the 'result_maps' folder, the image we can see is this one :
+
+<center>
+<img src = "series14_slice8_T2_map_limits_0_100.png" style="width:292px;height:217px;" >
+</center>
+
+But this figure is **wrong**, we should see something like the images of 'convert_segmentations_to_dicom_final.m'. We can see some colored points at the bottom and the top of the image, they are not at the right place.
+
+An another figure is created too : it is the streamlines of the femur and the tibia. The values are saved in the 'thickness_lines.m'. Here it is :
+
+<center>
+<img src = "thickness_lines.png" style="width:367px;height:290px;" >
+</center>
 
 ### What was wrong with it ?
 
+> *Remove from the path the folder data which is in analyysimokkula*
 > *Before running this function, one needs to run 'main_flat.m' because it is here that 'results_flat.m' is created if already not created.*
 
 One file looks like missing when we run this function : 'results_flat.m'.  
@@ -76,7 +95,18 @@ I added at the beginning of 'results_flat.m', line 17 :
     load T2maps
 ```
 
-In main_flat, many errors :
+I also manually changed the values of seg_general because 
+
+```matlab
+seg_general(7).backimgs(i).folder(j).name
+```  
+and  
+```matlab
+seg_general(7).backimgs(i).filename(j).name
+```  
+were refering to another data than the one I was using.
+
+In 'main_flat.m', many errors :
 
 1. check.fit didn't exist, I added a line at line 59 :
 
@@ -276,10 +306,33 @@ We can now go back to 'flat_converter.m'.
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
     ```
 
-14. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
+14. In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :
 
-I have to find why the matrix is fill with zero. Maybe it is a problem of saved file because initially T2maps should not be filled with zeros. Related to what is saved in the workspace ??
+```matlab
+    roilist(rr).bF = logical(temp_mask);
+```
 
-When I run 'format_results' in 'flat_converter.m', all is good and I have no error. All the files are created. But when I run 'flat_converter.m', I have errors. This might comes from 'roilist'. In format_results, the roilist is filled with logical values and in 'flat_converter', the roilist is filled with double. That's why we have an error related to the array indices (it needs to be positive integers or logical values and not double). I have to find what is different with roilist in the two functions.
+15. Then, it appeared that in 'format_results.m', one error is related to 'laplacian_thickness.m' : the limits of the array size were reached (0 and 365). Thus, I thought of adding lines or colunms of zeros (and delete the extra one) depending on whether the calculations were made for the femur or the tibia. At line 136, I added this :
 
-NB : I comment the part of the code in 'flat_converter.m' where T2map is actualised for the moment because it is full of zeros. Maybe it is related to roilist too.
+```matlab
+    switch which_cartilage
+    case 1 % femur
+        maski = [ logical(zeros(1, 384)) ; maski(1:383, :)];
+    case 2 % tibia
+        maski = [ logical(zeros(384, 1)) maski(:, 1:383)];
+        maski = [maski(2:384, :) ; logical(zeros(1, 384))];
+    end
+```
+
+16. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
+
+To resolve this, I traced the source of the problem : this led me to the 'inputs.m' function in 'runflat'.m, the ROI calculation gives something null so 'Timage' was null and so 'temp_map' was null too. I comment this line 92 :
+
+```matlab
+    [size_im] = size(Timage); % Gets the size of the image
+    % image     = zeros(size_im);
+    [ROI]     = roipoly(Timage, xr, yr); % it was written roipoly(image,xr,yr)
+    % Timage    = ROI.*Timage;       % Let's restrict areas outside the ROI
+```
+
+I can now run the 'flat_converter.m' function without any errors but I think that there is something to change for the ROI because I sort of avoided the problem but then the results are not exact I guess *(see the images at the beginning)*.
