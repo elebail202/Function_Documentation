@@ -83,9 +83,9 @@ An another figure is created too : it is the streamlines of the femur and the ti
 </center>
 
 ### What was wrong with it ?
-
-> *Remove from the path the folder data which is in analyysimokkula*
-> *Before running this function, one needs to run 'main_flat.m' because it is here that 'results_flat.m' is created if already not created.*
+ 
+> *Before running this function, one needs to run 'main_flat.m' because it is here that 'results_flat.m' is created if already not created.*  
+> *Before running, remove the 'data' folder that is in 'analyysimokkula' from the matlab path because it is not the one we are using.*
 
 One file looks like missing when we run this function : 'results_flat.m'.  
 So I tried to figure out when should this file be created. It appears that this file is created in the function 'main_flat.m'.
