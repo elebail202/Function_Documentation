@@ -50,7 +50,7 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
 - main_flat.m
 - format_results.m
 - texture2_fast
-- *... A diagram with the dependancies betweem the functions if coming...*
+- ...*Let's see the function dependencies diagram*
 
 
 And it `uses data` such as :
@@ -336,3 +336,23 @@ To resolve this, I traced the source of the problem : this led me to the 'inputs
 ```
 
 I can now run the 'flat_converter.m' function without any errors but I think that there is something to change for the ROI because I sort of avoided the problem but then the results are not exact I guess *(see the images at the beginning)*.
+
+## Third function : main_flat.m
+
+### Dependencies ?
+
+`Dependencies` with specific functions :
+
+- ...*Let's see the function dependencies diagram*
+
+
+And it `uses data` such as :
+
+- T2maps 
+- segment_info
+
+### What is it doing ?
+
+This function is `essential for the image flattening`. It runs the flatting process, gets the coordinates of ROI, defines the vector needed for tformation, calculates the thickness of cartilage, the image tranformation and created the segmented ROIs.
+
+It `creates the file 'results_flat'` which is essential for 'flat_converter.m'.
