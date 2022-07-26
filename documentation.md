@@ -1,4 +1,4 @@
-# WHAT ARE THE TEXTURES FUNCTIONS DOING ?
+# DOCUMENTATION ON THE TEXTURE FUNCTIONS
 
 ## First function : convert_segmentations_to_dicom_final.m
 
