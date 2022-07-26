@@ -108,13 +108,13 @@ were refering to another data than the one I was using.
 
 In 'main_flat.m', many errors :
 
-<span style='color:mediumseagreen'>**1.**</span> check.fit didn't exist, I added a line at line 59 :
+<span style='color:mediumseagreen'>**1.**</span> check.fit didn't exist, I added a line at line 59 :  
 
     ```matlab
         check.fit = exist('fit_info.mat', 'file');
     ```
 
-<span style='color:mediumseagreen'>**2.**</span> Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :
+<span style='color:mediumseagreen'>**2.**</span> Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :  
 
     ```matlab
         cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula_test_data\Anonymized - 04071989\Fyysikot Vic\mokkulafiles\20-Jun-2022-09.51.15');
@@ -128,7 +128,7 @@ In 'main_flat.m', many errors :
         savefile = 'results_flat';
     ```
 
-<span style='color:mediumseagreen'>**3.**</span> Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :
+<span style='color:mediumseagreen'>**3.**</span> Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :  
 
     ```matlab
         slices = zeros(length(seg_general(series).lines), 1);
@@ -161,7 +161,7 @@ In 'main_flat.m', many errors :
 
     And it seems that it resolves the problem for now.
 
-<span style='color:mediumseagreen'>**4.**</span> So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function :
+<span style='color:mediumseagreen'>**4.**</span> So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function :  
 
     At line 6, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
@@ -170,7 +170,7 @@ In 'main_flat.m', many errors :
         y = seg_general(index.serie).lines(index.slice).lines(t).Y;
     ``` 
 
-    So I wrote this instead :
+    So I wrote this instead :  
 
     ```matlab
         size_serie = length(index.serie);
@@ -180,12 +180,12 @@ In 'main_flat.m', many errors :
         end
     ``` 
 
-    Looks like 'coordinate.m' is now working well.
+    Looks like 'coordinate.m' is now working well.  
  
-<span style='color:mediumseagreen'>**5.**</span> Back in 'main_flat.m', another error to fix refering to 'runflat.m'.
+<span style='color:mediumseagreen'>**5.**</span> Back in 'main_flat.m', another error to fix refering to 'runflat.m'.  
 
-    One error is related to the same problem than before (access to a struct of struct).  
-    At line 86, I wrote this :
+    One error is related to the same problem than before (access to a struct of struct).    
+    At line 86, I wrote this :  
 
     ```matlab
         serie_size = length(index.serie);
@@ -194,7 +194,7 @@ In 'main_flat.m', many errors :
         end
     ```
 
-    Instead of this :
+    Instead of this :  
 
     ```matlab
         Timage = Tmap(index.serie).T2(:,:,index.slice);
@@ -202,13 +202,13 @@ In 'main_flat.m', many errors :
 
     It now seems that 'run_flat.m' is working.
 
-<span style='color:mediumseagreen'>**6.**</span> One error occurs at lines 187 and 197 in 'main_flat.m', it was written :
+<span style='color:mediumseagreen'>**6.**</span> One error occurs at lines 187 and 197 in 'main_flat.m', it was written :  
 
     ```matlab
         Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
     ```
 
-    But, at left we have a problem of size, I wrote :
+    But, at left we have a problem of size, I wrote :  
 
     ```matlab
         Tmap_flat.femur = runflat(Tmap, seg_general, template, index, check);
@@ -218,12 +218,12 @@ In 'main_flat.m', many errors :
 
 <span style='color:mediumseagreen'>**7.**</span> The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
 
-    At line 96, I wrote :
+    At line 96, I wrote :  
 
     ```matlab
         save(savefile, 'T2map_flat', 'dir_name')
-    ```  
-    instead of :
+    ```   
+    instead of :  
 
     ```matlab
         save(savefile, 'T2map_flat', 'param', 'dir_name')
@@ -249,7 +249,7 @@ We can now go back to 'flat_converter.m'.
         datasheet.tibia.T_flat
     ```
 
-<span style='color:mediumseagreen'>**9.**</span> At line 141, we can see this :
+<span style='color:mediumseagreen'>**9.**</span> At line 141, we can see this :  
 
     ```matlab
         temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
@@ -306,7 +306,7 @@ We can now go back to 'flat_converter.m'.
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
     ```
 
-<span style='color:mediumseagreen'>**13.**</span> In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :
+<span style='color:mediumseagreen'>**13.**</span> In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :  
 
 ```matlab
     roilist(rr).bF = logical(temp_mask);
