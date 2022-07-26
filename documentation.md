@@ -108,13 +108,13 @@ were refering to another data than the one I was using.
 
 In 'main_flat.m', many errors :
 
-1. check.fit didn't exist, I added a line at line 59 :
+<span style='color:mediumseagreen'>**1.**</span> check.fit didn't exist, I added a line at line 59 :
 
     ```matlab
         check.fit = exist('fit_info.mat', 'file');
     ```
 
-2. Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :
+<span style='color:mediumseagreen'>**2.**</span> Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :
 
     ```matlab
         cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula_test_data\Anonymized - 04071989\Fyysikot Vic\mokkulafiles\20-Jun-2022-09.51.15');
@@ -128,7 +128,7 @@ In 'main_flat.m', many errors :
         savefile = 'results_flat';
     ```
 
-3. Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :
+<span style='color:mediumseagreen'>**3.**</span> Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :
 
     ```matlab
         slices = zeros(length(seg_general(series).lines), 1);
@@ -161,7 +161,7 @@ In 'main_flat.m', many errors :
 
     And it seems that it resolves the problem for now.
 
-4. So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function :
+<span style='color:mediumseagreen'>**4.**</span> So now, back to the 'main_flat.m' function, another error comes up that refers to the 'coordinates.m' function :
 
     At line 6, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
@@ -182,7 +182,7 @@ In 'main_flat.m', many errors :
 
     Looks like 'coordinate.m' is now working well.
  
-5. Back in 'main_flat.m', another error to fix refering to 'runflat.m'.
+<span style='color:mediumseagreen'>**5.**</span> Back in 'main_flat.m', another error to fix refering to 'runflat.m'.
 
     One error is related to the same problem than before (access to a struct of struct).  
     At line 86, I wrote this :
@@ -202,7 +202,7 @@ In 'main_flat.m', many errors :
 
     It now seems that 'run_flat.m' is working.
 
-6. One error occurs at lines 187 and 197 in 'main_flat.m', it was written :
+<span style='color:mediumseagreen'>**6.**</span> One error occurs at lines 187 and 197 in 'main_flat.m', it was written :
 
     ```matlab
         Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
@@ -216,7 +216,7 @@ In 'main_flat.m', many errors :
 
     It seems okay now.
 
-7. The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
+<span style='color:mediumseagreen'>**7.**</span> The variable 'param' is not found in 'main_flat.m' so I am trying to figure out to what it refers. I see no variable like this in the different codes, I decided to do without though :
 
     At line 96, I wrote :
 
@@ -232,7 +232,7 @@ In 'main_flat.m', many errors :
 **The file 'results_flat.mat' is now created !!**   
 We can now go back to 'flat_converter.m'.
 
-8. A major problem occurs now :
+<span style='color:mediumseagreen'>**8.**</span> A major problem occurs now :
 
     ```matlab
         datasheet.femur{series}(rr).T_flat
@@ -249,7 +249,7 @@ We can now go back to 'flat_converter.m'.
         datasheet.tibia.T_flat
     ```
 
-9. At line 141, we can see this :
+<span style='color:mediumseagreen'>**9.**</span> At line 141, we can see this :
 
     ```matlab
         temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
@@ -261,7 +261,7 @@ We can now go back to 'flat_converter.m'.
         temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
     ```   
 
-10. Now, I have an error related to sizes. In fact, at line 203 :
+<span style='color:mediumseagreen'>**10.**</span> Now, I have an error related to sizes. In fact, at line 203 :
 
     ```matlab
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
@@ -277,14 +277,14 @@ We can now go back to 'flat_converter.m'.
         temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
     ```
 
-11. And now, in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
+<span style='color:mediumseagreen'>**11.**</span> And now, in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
     I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
 
     ```matlab
     fid_patreport = fopen('fid_patreport.txt','w');
     ```
 
-12. I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........I felt like it was not the good argument place in the call.
+<span style='color:mediumseagreen'>**12.**</span> I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........I felt like it was not the good argument place in the call.
 
      Originally, the function is defined like this :
 
@@ -306,13 +306,13 @@ We can now go back to 'flat_converter.m'.
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
     ```
 
-14. In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :
+<span style='color:mediumseagreen'>**13.**</span> In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :
 
 ```matlab
     roilist(rr).bF = logical(temp_mask);
 ```
 
-15. Then, it appeared that in 'format_results.m', one error is related to 'laplacian_thickness.m' : the limits of the array size were reached (0 and 365). Thus, I thought of adding lines or colunms of zeros (and delete the extra one) depending on whether the calculations were made for the femur or the tibia. At line 136, I added this :
+<span style='color:mediumseagreen'>**14.**</span> Then, it appeared that in 'format_results.m', one error is related to 'laplacian_thickness.m' : the limits of the array size were reached (0 and 365). Thus, I thought of adding lines or colunms of zeros (and delete the extra one) depending on whether the calculations were made for the femur or the tibia. At line 136, I added this :
 
 ```matlab
     switch which_cartilage
@@ -324,7 +324,7 @@ We can now go back to 'flat_converter.m'.
     end
 ```
 
-16. In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
+<span style='color:mediumseagreen'>**15.**</span> In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
 
 To resolve this, I traced the source of the problem : this led me to the 'inputs.m' function in 'runflat'.m, the ROI calculation gives something null so 'Timage' was null and so 'temp_map' was null too. I comment this line 92 :
 
