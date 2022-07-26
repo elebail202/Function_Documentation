@@ -98,11 +98,11 @@ I added at the beginning of 'results_flat.m', line 17 :
 I also manually changed the values of seg_general because 
 
 ```matlab
-seg_general(7).backimgs(i).folder(j).name
+    seg_general(7).backimgs(i).folder(j).name
 ```  
 and  
 ```matlab
-seg_general(7).backimgs(i).filename(j).name
+    seg_general(7).backimgs(i).filename(j).name
 ```  
 were refering to another data than the one I was using.
 
@@ -110,54 +110,54 @@ In 'main_flat.m', many errors :
 
 <span style='color:mediumseagreen'>**1.**</span> check.fit didn't exist, I added a line at line 59 :  
 
-    ```matlab
-        check.fit = exist('fit_info.mat', 'file');
-    ```
+```matlab
+    check.fit = exist('fit_info.mat', 'file');
+```
 
 <span style='color:mediumseagreen'>**2.**</span> Problems with the 'for loop' because it is not entering it. The 'what' command was not made in the good folder so I added a 'cd' at line 60 :  
 
-    ```matlab
-        cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula_test_data\Anonymized - 04071989\Fyysikot Vic\mokkulafiles\20-Jun-2022-09.51.15');
-        matfilelist = what;
-    ```
+```matlab
+    cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula_test_data\Anonymized - 04071989\Fyysikot Vic\mokkulafiles\20-Jun-2022-09.51.15');
+    matfilelist = what;
+```
 
     And in the same code, the file 'results_flat' was not created in the right folder, so I added this at line 88 :
 
-    ```matlab
-        cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula\analyysimokkula\flatter')
-        savefile = 'results_flat';
-    ```
+```matlab
+    cd ('C:\Users\elebail22\OneDrive - Oulun yliopisto\Documents\Stage_2A\Eve_stuff\mokkula\analyysimokkula\flatter')
+    savefile = 'results_flat';
+```
 
 <span style='color:mediumseagreen'>**3.**</span> Line 85, by calling the function 'execute_flat.m' which is defined in the same file, it makes an error related to the 'structure_loop.m' function at line 172. In this function, there are problems related to the use of structure in Matlab. At line 26, it was initially written this :  
 
-    ```matlab
-        slices = zeros(length(seg_general(series).lines), 1);
-        for ii = 1 : length(seg_general(series).lines)
-            if isreal(seg_general(series).lines(ii).lines) == 0
-                slices(ii) = 1;
-            else
-                slices(ii) = 0;
-            end
-        end 
-        slice = find(slices);
-    ```
+```matlab
+    slices = zeros(length(seg_general(series).lines), 1);
+    for ii = 1 : length(seg_general(series).lines)
+        if isreal(seg_general(series).lines(ii).lines) == 0
+            slices(ii) = 1;
+        else
+            slices(ii) = 0;
+        end
+    end 
+    slice = find(slices);
+```
     But it is impossible to take the length of this type of object. 'Series' is a list and 'seg_general(series).lines' is a array of struct array. Moreover, we cannot write 'seg_general(series).lines(ii).lines' because there are 2 results.  
     So, I decided to temporarily write this instead :
 
-    ```matlab
-        slices = zeros(18, 1);
-        size_series = size(series);
-        for ii = 1 : size_series
-            for jj = 1 : 18
-                if isreal (seg_general(series(ii)).lines(jj).lines) == 0
-                    slices(jj) = 1;
-                else
-                    slices(jj) = 0;
-                end
+```matlab
+    slices = zeros(18, 1);
+    size_series = size(series);
+    for ii = 1 : size_series
+        for jj = 1 : 18
+            if isreal (seg_general(series(ii)).lines(jj).lines) == 0
+                slices(jj) = 1;
+            else
+                slices(jj) = 0;
             end
-        end 
-        slice = find(slices);
-    ``` 
+        end
+    end 
+    slice = find(slices);
+``` 
 
     And it seems that it resolves the problem for now.
 
@@ -165,20 +165,20 @@ In 'main_flat.m', many errors :
 
     At line 6, it was written this, but it is a similar problem than before, we cannot write this because 'index.serie' is an array :
 
-    ```matlab
-        x = seg_general(index.serie).lines(index.slice).lines(t).X;
-        y = seg_general(index.serie).lines(index.slice).lines(t).Y;
-    ``` 
+```matlab
+    x = seg_general(index.serie).lines(index.slice).lines(t).X;
+    y = seg_general(index.serie).lines(index.slice).lines(t).Y;
+``` 
 
     So I wrote this instead :  
 
-    ```matlab
-        size_serie = length(index.serie);
-        for i = 1 : size_serie
-            x = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).X;
-            y = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).Y;
-        end
-    ``` 
+```matlab
+    size_serie = length(index.serie);
+    for i = 1 : size_serie
+        x = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).X;
+        y = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).Y;
+    end
+``` 
 
     Looks like 'coordinate.m' is now working well.  
  
@@ -187,32 +187,32 @@ In 'main_flat.m', many errors :
     One error is related to the same problem than before (access to a struct of struct).    
     At line 86, I wrote this :  
 
-    ```matlab
-        serie_size = length(index.serie);
-        for i = 1 : serie_size
-            Timage = Tmap(index.serie(serie_size)).T2(:, :, index.slice);
-        end
-    ```
+```matlab
+    serie_size = length(index.serie);
+    for i = 1 : serie_size
+        Timage = Tmap(index.serie(serie_size)).T2(:, :, index.slice);
+    end
+```
 
     Instead of this :  
 
-    ```matlab
-        Timage = Tmap(index.serie).T2(:,:,index.slice);
-    ```
+```matlab
+    Timage = Tmap(index.serie).T2(:,:,index.slice);
+```
 
     It now seems that 'run_flat.m' is working.
 
 <span style='color:mediumseagreen'>**6.**</span> One error occurs at lines 187 and 197 in 'main_flat.m', it was written :  
 
-    ```matlab
-        Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
-    ```
+```matlab
+    Tmap_flat.femur{index.serie}(index.slice) = runflat(Tmap, seg_general, template, index, check);
+```
 
     But, at left we have a problem of size, I wrote :  
 
-    ```matlab
-        Tmap_flat.femur = runflat(Tmap, seg_general, template, index, check);
-    ```
+```matlab
+    Tmap_flat.femur = runflat(Tmap, seg_general, template, index, check);
+```
 
     It seems okay now.
 
@@ -220,91 +220,91 @@ In 'main_flat.m', many errors :
 
     At line 96, I wrote :  
 
-    ```matlab
-        save(savefile, 'T2map_flat', 'dir_name')
-    ```   
+```matlab
+    save(savefile, 'T2map_flat', 'dir_name')
+```   
     instead of :  
 
-    ```matlab
-        save(savefile, 'T2map_flat', 'param', 'dir_name')
-    ```
+```matlab
+    save(savefile, 'T2map_flat', 'param', 'dir_name')
+```
 
 **The file 'results_flat.mat' is now created !!**   
 We can now go back to 'flat_converter.m'.
 
 <span style='color:mediumseagreen'>**8.**</span> A major problem occurs now :
 
-    ```matlab
-        datasheet.femur{series}(rr).T_flat
-    ```
+```matlab
+    datasheet.femur{series}(rr).T_flat
+```
     For example, the syntax 'datasheet.femur{series}(rr)' is not right because 'datasheet.femur' is a struct with different fields.  
     Then, I decided to replace all the lines using this by :
 
-    ```matlab
-        datasheet.femur.T_flat
-    ```
+```matlab
+    datasheet.femur.T_flat
+```
 
     And I did the same with 
-    ```matlab
-        datasheet.tibia.T_flat
-    ```
+```matlab
+    datasheet.tibia.T_flat
+```
 
 <span style='color:mediumseagreen'>**9.**</span> At line 141, we can see this :  
 
-    ```matlab
-        temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
-    ```
+```matlab
+    temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
+```
 
     which is a wrong use of 'zeros', so I wrote this instead :
 
-    ```matlab
-        temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
-    ```   
+```matlab
+    temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
+```   
 
 <span style='color:mediumseagreen'>**10.**</span> Now, I have an error related to sizes. In fact, at line 203 :
 
-    ```matlab
-        temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
-    ```  
+```matlab
+    temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
+```  
 
     But, 'temp_mask' is 384 by 384 and 'temp_map' is 384 by 281.  
     I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
 
     For the moment, I decided to fill the smaller matrix with zeros. Line 204, it is now written :
 
-    ```matlab
-        temp_map(series).T2=[temp_map(series).T2 zeros(384, 103, 8)];
-        temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
-    ```
+```matlab
+    temp_map(series).T2=[temp_map(series).T2 zeros(384, 103, 8)];
+    temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
+```
 
 <span style='color:mediumseagreen'>**11.**</span> And now, in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
     I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
 
-    ```matlab
+```matlab
     fid_patreport = fopen('fid_patreport.txt','w');
-    ```
+```
 
 <span style='color:mediumseagreen'>**12.**</span> I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........I felt like it was not the good argument place in the call.
 
      Originally, the function is defined like this :
 
-    ```matlab
-        format_results(series,flipped,firstresults,sequence_save_info,patientname,fid_patreport,series_loc,xlimits,ylimits,backimgs,varargin)
-    ```
+```matlab
+    format_results(series,flipped,firstresults,sequence_save_info,patientname,fid_patreport,series_loc,xlimits,ylimits,backimgs,varargin)
+```
 
     So I wrote this :
        
-    ```matlab
-        format_results(series, seg_general(series).flipped, seg_general(series).minvalue, ...
-        seg_general(series).maxvalue, fit_info(series).patientname, zeros(size(mask_stack)), ...
-            thisfolder, size(temp_mask, 1), size(temp_mask, 2), seg_general(series).backimgs)
-    ```
+```matlab
+    format_results(series, seg_general(series).flipped, seg_general(series).minvalue, ...
+    seg_general(series).maxvalue, fit_info(series).patientname, zeros(size(mask_stack)), ...
+        thisfolder, size(temp_mask, 1), size(temp_mask, 2), seg_general(series).backimgs)
+```
      Instead of this :
 
-    ```matlab
-        format_results(series, seg_general(series).flipped, seg_general(series).minvalue, seg_general(series).maxvalue, ...
+```matlab
+    format_results(series, seg_general(series).flipped, seg_general(series).minvalue, seg_general(series).maxvalue, ...
         0, 0, fit_info(series).patientname, 0, thisfolder, size(temp_mask, 1), size(temp_mask, 2),zeros(size(mask_stack)))
-    ```
+```
 
 <span style='color:mediumseagreen'>**13.**</span> In 'flat_converter.m', one error was related to 'roilist' : initially, this variable comes from 'masks_series_14.m' which is part of the data. In this file, 'roilist' is a struct with logical values or in 'flat_converter.m', the 'roilist' variable created was a struct with double. So I changed double to logical values by adding the 'logical' function of Matlab each time the code was constructing 'roilist' :  
 
