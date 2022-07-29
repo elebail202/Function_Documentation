@@ -170,14 +170,11 @@ In 'main_flat.m', many errors :
     y = seg_general(index.serie).lines(index.slice).lines(t).Y;
 ``` 
 
-    So I wrote this instead :  
+    So I wrote this instead because seg_general(index.serie(1)) is empty :  
 
 ```matlab
-    size_serie = length(index.serie);
-    for i = 1 : size_serie
-        x = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).X;
-        y = seg_general(index.serie(size_serie)).lines(index.slice).lines(t).Y;
-    end
+    x = seg_general(index.serie(2)).lines(index.slice).lines(t).X;
+    y = seg_general(index.serie(2)).lines(index.slice).lines(t).Y; 
 ``` 
 
     Looks like 'coordinate.m' is now working well.  
