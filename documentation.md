@@ -144,20 +144,17 @@ In 'main_flat.m', many errors :
     slice = find(slices);
 ```
     But it is impossible to take the length of this type of object. 'Series' is a list and 'seg_general(series).lines' is a array of struct array. Moreover, we cannot write 'seg_general(series).lines(ii).lines' because there are 2 results.  
-    So, I decided to temporarily write this instead :
+    So, I decided to temporarily write this instead because seg_general(series(1)) is empty :
 
 ```matlab
-    slices = zeros(18, 1);
-    size_series = size(series);
-    for ii = 1 : size_series
-        for jj = 1 : 18
-            if isreal (seg_general(series(ii)).lines(jj).lines) == 0
-                slices(jj) = 1;
-            else
-                slices(jj) = 0;
-            end
+    slices = zeros(length(seg_general(series(2)).lines), 1);
+    for ii = 1 : length(seg_general(series(2)).lines)
+        if isreal(seg_general(series(2)).lines(ii).lines) == 0
+            slices(ii) = 1;
+        else
+            slices(ii) = 0;
         end
-    end 
+    end
     slice = find(slices);
 ``` 
 
