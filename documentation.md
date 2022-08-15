@@ -23,7 +23,7 @@ The file created contains a 384 * 384 * 3 matrix with values between 0 and 255 w
 
 | Segmentation | T2 map |
 | :----------: | :----: |
-|<img src = "series14_slice8_Segmentation.png" style="width:205px;height:181px;"> | <img src = "series14_slice8_T2_map.png" style="width:205px;height:181px;"> |
+|<img src = "series14_slice8_Segmentation.png" style = "width : 205px; height : 181px;"> | <img src = "series14_slice8_T2_map.png" style = "width : 205px; height : 181px;"> |
 
 It looks like the colors are inverted and the 'Segmentation' image shows the intensity of each pixel.
 
@@ -65,21 +65,27 @@ And it `uses data` such as :
 This function is creating a `new folder` with all the data flatted. As the function is in the 'flatter' folder, the name of the new folder is 'flatter_flat'. Here is a screen of all the files created in 'flatter_flat' :
 
 <center>
-<img src = "flatter_flat.png" style="width:258px;height:239px;" >
+<img src = "flatter_flat.png" style = "width : 258px; height : 239px;" >
 </center>
 
 In the 'result_maps' folder, the image we can see is this one :
 
 <center>
-<img src = "series14_slice8_T2_map_limits_0_100.png" style="width:292px;height:217px;" >
+<img src = "series14_slice8_T2_map_limits_0_100.png" style = "width : 292px; height : 217px;">
 </center>
 
-But this figure is **wrong**, we should see something like the images of 'convert_segmentations_to_dicom_final.m'. We can see some colored points at the bottom and the top of the image, they are not at the right place.
+I don't know yet if this figure is wrong or not. One can read [1] that a flattened cartilage is on one line and this looks similar to what the 'flat_converter.m' function gave us :
+
+<center>
+<img src = "flattened_cartilage.png" style = "width : 451px; height : 150px;">
+</center>
+
+So the result might be correct.  
 
 An another figure is created too : it is the streamlines of the femur and the tibia. The values are saved in the 'thickness_lines.m'. Here it is :
 
 <center>
-<img src = "thickness_lines.png" style="width:367px;height:290px;" >
+<img src = "thickness_lines.png" style = "width : 367px; height : 290px;" >
 </center>
 
 Some points are missing.
@@ -357,3 +363,7 @@ And it `uses data` such as :
 This function is `essential for the image flattening`. It runs the flatting process, gets the coordinates of ROI, defines the vector needed for tformation, calculates the thickness of cartilage, the image tranformation and created the segmented ROIs.
 
 It `creates the file 'results_flat'` which is essential for 'flat_converter.m'.
+
+Reference :
+
+[1] : Julio Carballido-Gamio, Thomas M. Link and Sharmila Majumdar "New Techniques for Cartilage Magnetic Resonance Imaging Relaxation Time Analysis: Texture Analysis of Flattened Cartilage and Localized Intra- and Inter-subject Comparisons". In *Magn Reson Med.* (2008).
