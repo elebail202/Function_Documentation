@@ -1,8 +1,8 @@
 # DOCUMENTATION ON THE TEXTURE FUNCTIONS
 
-## First function : convert_segmentations_to_dicom_final.m
+## **First function : convert_segmentations_to_dicom_final.m**
 
-### Dependencies ?
+### DEPENDENCIES
 
 `No dependencies` with a specific function but it `uses data` such as :
 
@@ -13,7 +13,7 @@
 
 The function uses the previous segmented image in mokkula.
 
-### What is it doing ?
+### WHAT IS IT DOING ?
 
 By running this function, you create a `IMA file` openable with 'dicomread' on Matlab that specifies in his name the serie and the segmentation you are working with. This file is created in a copy of the folder name where your data is with 'Mokkulamaps' added.
 
@@ -25,9 +25,9 @@ The file created contains a 384 * 384 * 3 matrix with values between 0 and 255 w
 | :----------: | :----: |
 |<img src = "series14_slice8_Segmentation.png" style = "width : 205px; height : 181px;"> | <img src = "series14_slice8_T2_map.png" style = "width : 205px; height : 181px;"> |
 
-It looks like the colors are inverted and the 'Segmentation' image shows the intensity of each pixel.
+It looks like the colors are inverted and the 'Segmentation' image shows the intensity of each pixel. T2 map is the original image and Segmentation the one created by the function.
 
-### What wasn't working well ?
+### WHAT WAS NOT WORKING WELL ?
 
 Line 51, it was written : 
 
@@ -41,9 +41,9 @@ But isfolder on Matlab takes a text in argument so it wasn't working. I replaced
     if (patients(patient).name & patients(patient).name(1) ~= '.');  
 ```
 
-## Second function : flat_converter.m
+## **Second function : flat_converter.m**
 
-### Dependencies ?
+### DEPENDENCIES
 
 `Dependencies` with specific functions :
 
@@ -60,7 +60,7 @@ And it `uses data` such as :
 - fit_info
 - T2maps 
 
-### What is it doing ?
+### WHAT IS IT DOING ?
 
 This function is creating a `new folder` with all the data flatted. As the function is in the 'flatter' folder, the name of the new folder is 'flatter_flat'. Here is a screen of all the files created in 'flatter_flat' :
 
@@ -90,7 +90,7 @@ An another figure is created too : it is the streamlines of the femur and the ti
 
 Some points are missing.
 
-### What was wrong with it ?
+### WHAT WAS NOT WORKING WELL ?
  
 > *Before running this function, one needs to run 'main_flat.m' because it is here that 'results_flat.m' is created if already not created.*  
 > *Before running, remove the 'data' folder that is in 'analyysimokkula' from the matlab path because it is not the one we are using.*
@@ -344,9 +344,9 @@ There is an issue with the function 'roipoly'. It returns a black image instead 
 
 <span style='color:mediumseagreen'>**16.**</span> The image is not the good one.
 
-## Third function : main_flat.m
+## **Third function : main_flat.m**
 
-### Dependencies ?
+### DEPENDENCIES
 
 `Dependencies` with specific functions :
 
@@ -358,12 +358,17 @@ And it `uses data` such as :
 - T2maps 
 - segment_info
 
-### What is it doing ?
+### WHAT IS IT DOING ?
 
 This function is `essential for the image flattening`. It runs the flatting process, gets the coordinates of ROI, defines the vector needed for tformation, calculates the thickness of cartilage, the image tranformation and created the segmented ROIs.
 
-It `creates the file 'results_flat'` which is essential for 'flat_converter.m'.
+It `creates the file 'results_flat` which is essential for 'flat_converter.m'. This file contains the structure 'T2map_flat' with all the flattened values and the variable 'dir_name' which is the name of the directory where the file 'results_flat' is created.
 
-Reference :
+### WHAT WAS NOT WORKING WELL ?
+
+The modifications related to this function have been made during the debugging of the function 'flat_converter.m'.
+
+
+ ## **REFERENCE** 
 
 [1] : Julio Carballido-Gamio, Thomas M. Link and Sharmila Majumdar "New Techniques for Cartilage Magnetic Resonance Imaging Relaxation Time Analysis: Texture Analysis of Flattened Cartilage and Localized Intra- and Inter-subject Comparisons". In *Magn Reson Med.* (2008).
