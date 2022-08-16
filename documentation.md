@@ -251,7 +251,7 @@ We can now go back to 'flat_converter.m'.
     datasheet.tibia.T_flat
 ```
 
-<span style='color:mediumseagreen'>**9.**</span> At line 141, we can see this :  
+<span style='color:mediumseagreen'>**9.**</span> At line 161, we can see this :  
 
 ```matlab
     temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
@@ -263,7 +263,7 @@ We can now go back to 'flat_converter.m'.
     temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
 ```   
 
-<span style='color:mediumseagreen'>**10.**</span> Now, I have an error related to sizes. In fact, at line 203 :
+<span style='color:mediumseagreen'>**10.**</span> Now, I have an error related to sizes. In fact, at line 242 :
 
 ```matlab
     temp_map(series).T2(:, :, size(mask_avg, 2)) = temp_mask;
@@ -272,7 +272,7 @@ We can now go back to 'flat_converter.m'.
     But, 'temp_mask' is 384 by 384 and 'temp_map' is 384 by 281.  
     I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
 
-    For the moment, I decided to fill the smaller matrix with zeros. Line 204, it is now written :
+    For the moment, I decided to fill the smaller matrix with zeros. Line 242, it is now written :
 
 ```matlab
     temp_map(series).T2=[temp_map(series).T2 zeros(384, 103, 8)];
@@ -280,13 +280,13 @@ We can now go back to 'flat_converter.m'.
 ```
 
 <span style='color:mediumseagreen'>**11.**</span> And now, in 'format_results.m', I don't know to what fid_patreport refers to. So I have an error because it is not the good format when calling the function. 
-    I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 204 :
+I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 205 :
 
 ```matlab
     fid_patreport = fopen('fid_patreport.txt','w');
 ```
 
-<span style='color:mediumseagreen'>**12.**</span> I changed the call of the function format_results because it was not logical for me in flat_converter at line 264. NEED TO SEE IF IT WORKS........I felt like it was not the good argument place in the call.
+<span style='color:mediumseagreen'>**12.**</span> I changed the call of the function format_results because it was not logical for me in flat_converter at line 301. I felt like it was not the good argument place in the call. Plus, it was not useful to define the variable 'fid_patreport' as an argument of the function since it is a file created inside of it.
 
      Originally, the function is defined like this :
 
@@ -298,8 +298,8 @@ We can now go back to 'flat_converter.m'.
        
 ```matlab
     format_results(series, seg_general(series).flipped, seg_general(series).minvalue, ...
-    seg_general(series).maxvalue, fit_info(series).patientname, zeros(size(mask_stack)), ...
-        thisfolder, size(temp_mask, 1), size(temp_mask, 2), seg_general(series).backimgs)
+        seg_general(series).maxvalue, fit_info(series).patientname, thisfolder, ...
+        [0 384], [0 384], seg_general(series).backimgs)
 ```
      Instead of this :
 
@@ -342,7 +342,6 @@ There is an issue with the function 'roipoly'. It returns a black image instead 
 
 **Update : ROI is finally not null due to one modification I made in 'coordinates.m'.**
 
-<span style='color:mediumseagreen'>**16.**</span> The image is not the good one.
 
 ## **Third function : main_flat.m**
 
