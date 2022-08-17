@@ -246,7 +246,7 @@ We can now go back to 'flat_converter.m'.
     datasheet.femur.T_flat
 ```
 
-    And I did the same with 
+And I did the same with 
 ```matlab
     datasheet.tibia.T_flat
 ```
@@ -257,7 +257,7 @@ We can now go back to 'flat_converter.m'.
     temp_mask(1 : vert1, 1 : horz1) = zeros(1 : vert1, 1 : horz1);
 ```
 
-    which is a wrong use of 'zeros', so I wrote this instead :
+which is a wrong use of 'zeros', so I wrote this instead :
 
 ```matlab
     temp_mask(1 : vert1, 1 : horz1) = zeros(vert1, horz1);
@@ -272,7 +272,7 @@ We can now go back to 'flat_converter.m'.
     But, 'temp_mask' is 384 by 384 and 'temp_map' is 384 by 281.  
     I don't know from where this error comes yet but I'll figure it out. Maybe it is due to all my changes but this is not sure.
 
-    For the moment, I decided to fill the smaller matrix with zeros. Line 242, it is now written :
+For the moment, I decided to fill the smaller matrix with zeros. Line 242, it is now written :
 
 ```matlab
     temp_map(series).T2=[temp_map(series).T2 zeros(384, 103, 8)];
@@ -294,14 +294,14 @@ I finally understood that 'fid_patreport' was supposed to be a text file so I de
     format_results(series,flipped,firstresults,sequence_save_info,patientname,fid_patreport,series_loc,xlimits,ylimits,backimgs,varargin)
 ```
 
-    So I wrote this :
+So I wrote this :
        
 ```matlab
     format_results(series, seg_general(series).flipped, seg_general(series).minvalue, ...
         seg_general(series).maxvalue, fit_info(series).patientname, thisfolder, ...
         [0 384], [0 384], seg_general(series).backimgs)
 ```
-     Instead of this :
+Instead of this :
 
 ```matlab
     format_results(series, seg_general(series).flipped, seg_general(series).minvalue, seg_general(series).maxvalue, ...
