@@ -283,7 +283,7 @@ We can now go back to 'flat_converter.m'.
 I finally understood that 'fid_patreport' was supposed to be a text file so I decided to create it, at line 205 :
 
 ```matlab
-    fid_patreport = fopen('fid_patreport.txt','w');
+    fid_patreport = fopen('fid_patreport.txt', 'w');
 ```
 
 <span style='color:mediumseagreen'>**12.**</span> I changed the call of the function format_results because it was not logical for me in flat_converter at line 301. I felt like it was not the good argument place in the call. Plus, it was not useful to define the variable 'fid_patreport' as an argument of the function since it is a file created inside of it.
@@ -319,10 +319,10 @@ I finally understood that 'fid_patreport' was supposed to be a text file so I de
 ```matlab
     switch which_cartilage
     case 1 % femur
-        maski = [ logical(zeros(1, 384)) ; maski(1:383, :)];
+        maski = [ logical(zeros(1, 384)) ; maski(1 : 383, :)];
     case 2 % tibia
-        maski = [ logical(zeros(384, 1)) maski(:, 1:383)];
-        maski = [maski(2:384, :) ; logical(zeros(1, 384))];
+        maski = [ logical(zeros(384, 1)) maski(:, 1 : 383)];
+        maski = [maski(2 : 384, :) ; logical(zeros(1, 384))];
     end
 ```
 
