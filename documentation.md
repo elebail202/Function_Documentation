@@ -326,23 +326,6 @@ Instead of this :
     end
 ```
 
-<span style='color:mediumseagreen'>**15.**</span> In 'texture2_fast.m', the variable 'text_bF' is not known. The problem is that the *'for loop'* is not run. This is due to 'data_slice' that is null everywhere. It means that 'T2map(14).T2' is equal to zero.
-
-To resolve this, I traced the source of the problem : this led me to the 'inputs.m' function in 'runflat'.m, the ROI calculation gives something null so 'Timage' was null and so 'temp_map' was null too. I commented this line 92 :
-
-```matlab
-    [size_im] = size(Timage); % Gets the size of the image
-    % image     = zeros(size_im);
-    [ROI]     = roipoly(Timage, xr, yr); % it was written roipoly(image,xr,yr)
-    % Timage    = ROI.*Timage;       % Let's restrict areas outside the ROI
-```
-
-I can now run the 'flat_converter.m' function without any errors but I think that there is something to change for the ROI because I sort of avoided the problem but then the results are not exact I guess *(see the images at the beginning)*.  
-There is an issue with the function 'roipoly'. It returns a black image instead of something usable. I didn't figure out yet how to fix this.
-
-**Update : ROI is finally not null due to one modification I made in 'coordinates.m'.**
-
-
 ## **Third function : main_flat.m**
 
 **IMPORTANT NOTE** 
