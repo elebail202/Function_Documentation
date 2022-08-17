@@ -345,6 +345,9 @@ There is an issue with the function 'roipoly'. It returns a black image instead 
 
 ## **Third function : main_flat.m**
 
+**IMPORTANT NOTE** 
+> To whoever who wants to run this function, the paths lines 60 and 88 must been changed. At line 60, you write the directory where your data is located and at line 88 where you want to create the file 'results_flat.m'.
+
 ### DEPENDENCIES
 
 `Dependencies` with specific functions :
